@@ -49,12 +49,16 @@ In modern supply chains, critical disruptions often appear in news feeds hours o
 
 ### Running the Application
 
+The application requires `seed_data.yaml` to be present in the root directory for initial data population.
+
 Start the server using Uvicorn:
 
 ```bash
 export PYTHONPATH=src
 poetry run uvicorn app.main:app --reload
 ```
+
+The server will automatically seed the database with sample shipments from `seed_data.yaml` on startup.
 
 The API will be available at `http://127.0.0.1:8000`.
 Health check: `http://127.0.0.1:8000/health`
