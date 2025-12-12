@@ -76,3 +76,30 @@ async def test_create_assessment_non_disruptive(mock_db, mock_extractor, mock_re
     mock_repo.get_by_destination.assert_not_called()
     assert assessment.mitigation_strategy["action_required"] is False
     assert assessment.affected_shipment_ids == []
+
+@pytest.mark.asyncio
+async def test_create_assessment_disruptive_no_shipments(mock_db, mock_extractor, mock_repo):
+    service = RiskAssessmentService(mock_db, mock_extractor, mock_repo)
+    
+    # Mock Event: Disruptive but no shipments will be found
+    event = DisruptionEvent(
+        target_port="London",
+        event_type="Strike",
+        is_disruption=True,
+        confidence_score=0.9
+    )
+    mock_extractor.parse_snippet.return_value = event
+    
+    # Mock Shipments: Return empty list
+    mock_repo.get_by_destination.return_value = []
+    
+    assessment = await service.create_assessment("Strike in London")
+    
+    # Verify interaction
+    mock_repo.get_by_destination.assert_awaited_once_with("London")
+    
+    # Verify assessment content
+    assert assessment.detected_event["target_port"] == "London"
+    assert assessment.affected_shipment_ids == []
+    assert assessment.mitigation_strategy["action_required"] is False
+    assert "no active shipments found" in assessment.mitigation_strategy["recommendation_text"]

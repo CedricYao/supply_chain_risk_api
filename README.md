@@ -1,6 +1,6 @@
 # Supply Chain Risk Monolith
 
-A proactive supply chain risk assessment agent that uses Google's Gemini 1.5 Flash to analyze unstructured news snippets, identify potential disruptions (like strikes or weather events), and correlate them with active shipments to generate actionable mitigation advice.
+A proactive supply chain risk assessment agent that uses Google's Gemini 2.5 Flash to analyze unstructured news snippets, identify potential disruptions (like strikes or weather events), and correlate them with active shipments to generate actionable mitigation advice.
 
 ## 🎯 Purpose
 

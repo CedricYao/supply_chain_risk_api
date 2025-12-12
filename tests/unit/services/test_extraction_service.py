@@ -32,6 +32,27 @@ async def test_parse_snippet_success(mock_genai_client):
     assert event.confidence_score == 0.9
 
 @pytest.mark.asyncio
+async def test_parse_snippet_no_location(mock_genai_client):
+    service = IntelligentExtractionService(project="test", location="us-central1")
+    service.client = mock_genai_client
+    
+    # Mock response with no location
+    mock_response = MagicMock()
+    mock_response.parsed = DisruptionEvent(
+        target_port=None,
+        event_type="General News",
+        is_disruption=False,
+        confidence_score=0.5
+    )
+    
+    service.client.aio.models.generate_content = AsyncMock(return_value=mock_response)
+    
+    event = await service.parse_snippet("Some generic news")
+    
+    assert event.target_port is None
+    assert event.is_disruption is False
+
+@pytest.mark.asyncio
 async def test_parse_snippet_failure(mock_genai_client):
     service = IntelligentExtractionService(project="test", location="us-central1")
     service.client = mock_genai_client
