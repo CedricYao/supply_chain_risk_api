@@ -1,3 +1,4 @@
+import logging
 from typing import Annotated
 from fastapi import APIRouter, Depends, status, HTTPException
 from app.schemas.assessment import RiskAssessmentRequest, RiskAssessmentResponse
@@ -16,5 +17,5 @@ async def analyze_risk(
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(e))
     except Exception as e:
-        # In production, log this error
+        logging.error(f"Assessment failed: {e}")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal Server Error")

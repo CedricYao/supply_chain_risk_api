@@ -12,7 +12,7 @@ def mock_genai_client():
 
 @pytest.mark.asyncio
 async def test_parse_snippet_success(mock_genai_client):
-    service = IntelligentExtractionService("fake_key")
+    service = IntelligentExtractionService(project="test", location="us-central1")
     service.client = mock_genai_client
     
     # Mock response
@@ -33,7 +33,7 @@ async def test_parse_snippet_success(mock_genai_client):
 
 @pytest.mark.asyncio
 async def test_parse_snippet_failure(mock_genai_client):
-    service = IntelligentExtractionService("fake_key")
+    service = IntelligentExtractionService(project="test", location="us-central1")
     service.client = mock_genai_client
     
     # Simulate API error

@@ -10,16 +10,17 @@ class ExtractionError(Exception):
     pass
 
 class IntelligentExtractionService:
-    def __init__(self, api_key: Optional[str] = None):
-        self.api_key = api_key or settings.GOOGLE_API_KEY
-        self.client = genai.Client(api_key=self.api_key)
+    def __init__(self, project: Optional[str] = None, location: Optional[str] = None):
+        self.project = project or settings.GOOGLE_CLOUD_PROJECT
+        self.location = location or settings.GOOGLE_CLOUD_LOCATION
+        self.client = genai.Client(vertexai=True, project=self.project, location=self.location)
 
     async def parse_snippet(self, text: str) -> DisruptionEvent:
         try:
             # Using Gemini 1.5 Flash as it is reliable and fast for this.
             response = await self.client.aio.models.generate_content(
                 model="gemini-1.5-flash",
-                contents=f"Analyze this news snippet and extract supply chain disruption details:\n\n{text}",
+                contents=settings.EXTRACTION_PROMPT.format(text=text),
                 config=types.GenerateContentConfig(
                     response_mime_type="application/json",
                     response_schema=DisruptionEvent

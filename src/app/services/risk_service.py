@@ -45,6 +45,10 @@ class RiskAssessmentService:
         await self.db.commit()
         await self.db.refresh(assessment)
         
+        # Attach the transient objects so the Pydantic schema can serialize them
+        # (The schema expects 'affected_shipments', but the DB model only has 'affected_shipment_ids')
+        assessment.affected_shipments = affected_shipments  # type: ignore
+
         return assessment
 
     def _generate_strategy(self, event: DisruptionEvent, shipments: Sequence[ShipmentModel]) -> MitigationAdvice:
