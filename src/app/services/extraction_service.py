@@ -17,9 +17,9 @@ class IntelligentExtractionService:
 
     async def parse_snippet(self, text: str) -> DisruptionEvent:
         try:
-            # Using Gemini 1.5 Flash as it is reliable and fast for this.
+            # Using Gemini 2.5 Flash as it is reliable and fast for this.
             response = await self.client.aio.models.generate_content(
-                model="gemini-1.5-flash",
+                model="gemini-2.5-flash",
                 contents=settings.EXTRACTION_PROMPT.format(text=text),
                 config=types.GenerateContentConfig(
                     response_mime_type="application/json",
