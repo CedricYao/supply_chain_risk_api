@@ -47,7 +47,7 @@ class RiskAssessmentService:
         
         # Attach the transient objects so the Pydantic schema can serialize them
         # (The schema expects 'affected_shipments', but the DB model only has 'affected_shipment_ids')
-        assessment.affected_shipments = affected_shipments  # type: ignore
+        assessment.affected_shipments = list(affected_shipments)
 
         return assessment
 

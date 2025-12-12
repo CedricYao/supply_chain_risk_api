@@ -1,4 +1,5 @@
 import yaml
+import logging
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from app.db.session import db
@@ -6,6 +7,10 @@ from app.db.base import Base
 from app.api.v1.endpoints import assessment
 from app.models.shipment import ShipmentModel
 from sqlalchemy import select
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -25,11 +30,11 @@ async def lifespan(app: FastAPI):
                         shipments = [ShipmentModel(**item) for item in data["shipments"]]
                         session.add_all(shipments)
                         await session.commit()
-                        print(f"Seeded {len(shipments)} shipments from seed_data.yaml")
+                        logger.info(f"Seeded {len(shipments)} shipments from seed_data.yaml")
     except FileNotFoundError:
-        print("seed_data.yaml not found, skipping seeding.")
+        logger.warning("seed_data.yaml not found, skipping seeding.")
     except Exception as e:
-        print(f"Failed to seed data: {e}")
+        logger.error(f"Failed to seed data: {e}")
 
     yield
     await db.engine.dispose()
